@@ -23,7 +23,18 @@ const roleUpgrader = {
             } else {
                 creep.memory.outing = false;
             }
-            let source = creep.pos.findClosestByPath(FIND_SOURCES);
+            let source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => (structure.structureType === STRUCTURE_STORAGE) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 900000
+            });
+            if (source) {
+                if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    let mark = source.pos.toString();
+                    goings[mark] = true;
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    return;
+                }
+            }
+            source = creep.pos.findClosestByPath(FIND_SOURCES);
             if (!source) {
                 if (creep.room === Game.rooms['W26S12']) {
                     creep.memory.outing = true;

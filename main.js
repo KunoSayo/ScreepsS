@@ -38,7 +38,7 @@ const roles = {
     },
     'builder': {
         role: require('role.builder'),
-        isNeed: (num) => num < 3 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
+        isNeed: (num) => num < 1 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
         body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     }
 };
@@ -89,21 +89,24 @@ function checkCreep(spawnPoint = 'Spawn1', logMissing = false) {
 
 function defendRoom() {
     for (let roomName in Game.rooms) {
-        const hostiles = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
-        if (hostiles.length > 0) {
-            let username = hostiles[0].owner.username;
-            Game.notify(`User ${username} spotted in room ${roomName}`);
-        }
-
         let ggs = Game.rooms[roomName].find(FIND_TOMBSTONES);
         if (ggs && ggs.length > 0) {
+            let movedCreep = {};
             for (let i in ggs) {
-                if (ggs[i].store[RESOURCE_ENERGY] > 0) {
-                    let creep = ggs[i].pos.findClosestByRange(FIND_MY_CREEPS, {
-                        filter: (c) => c.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-                    });
-
-                    let result = creep.withdraw(ggs[i], RESOURCE_ENERGY);
+                let resType = _.keys(ggs[i].store)[0];
+                let creep = ggs[i].pos.findClosestByRange(FIND_MY_CREEPS, {
+                    filter: (c) => {
+                        if(c.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && ggs[i].store[RESOURCE_ENERGY] > 0) {
+                            return !movedCreep[c.name];
+                        } else if(c.store.getFreeCapacity(_.keys(ggs[i].store)[0]) > 0 && c.memory.role === 'harvester') {
+                            return !movedCreep[c.name];
+                        }
+                        return false;
+                    }
+                });
+                if(creep) {
+                    let result = creep.withdraw(ggs[i], resType);
+                    movedCreep[creep.name] = true;
                     if (result === ERR_NOT_IN_RANGE) {
                         console.log("move " + creep + " to get tombstone");
                         creep.moveTo(ggs[i]);
@@ -137,6 +140,4 @@ module.exports.loop = function () {
     for (let taskName in tickTasks) {
         tickTasks[taskName].tick();
     }
-
-    Game.rooms['W26S12'].createConstructionSite(19, 29, STRUCTURE_TOWER);
 };

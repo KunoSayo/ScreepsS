@@ -45,13 +45,14 @@ let roleHaverster = {
                 creep.memory.transfer = true;
             }
         } else {
+            
             let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType === STRUCTURE_TOWER) && structure.store.getUsedCapacity(RESOURCE_ENERGY) < 500;
                 }
             });
             let resType = _.keys(creep.store)[0];
-            if (target) {
+            if (target && resType == RESOURCE_ENERGY) {
                 if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
                     creep.say("go tower");
