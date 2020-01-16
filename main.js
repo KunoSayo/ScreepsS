@@ -38,8 +38,8 @@ const roles = {
     },
     'builder': {
         role: require('role.builder'),
-        isNeed: (num) => num < 1 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
+        isNeed: (num) => num < 2 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
+        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE]
     }
 };
 const tickTasks = {

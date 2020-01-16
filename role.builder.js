@@ -31,7 +31,7 @@ const roleBuilder = {
                 return;
             }
             if (source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: structure => structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 5000
+                filter: structure => structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 50000
             })) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#00FF00'}});

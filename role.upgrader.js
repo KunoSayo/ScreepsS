@@ -24,12 +24,11 @@ const roleUpgrader = {
                 creep.memory.outing = false;
             }
             let source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => (structure.structureType === STRUCTURE_STORAGE) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 900000
+                filter: (structure) => (structure.structureType === STRUCTURE_STORAGE) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 500000
             });
             if (source) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    let mark = source.pos.toString();
-                    goings[mark] = true;
+                    let mark = source.pos.toString()
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
                     return;
                 }
