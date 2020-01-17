@@ -131,12 +131,11 @@ module.exports.loop = function () {
         }
     }
     for (let name in Game.creeps) {
-        let creep = Game.creeps[name];
-        let roleTask = roles[creep.memory.role].role;
-        if (roleTask) {
-            roleTask.run(creep);
-        } else {
-            console.log('creep:' + name + ', role: ' + creep.memory.role + " cannot find a task");
+        try {
+            let creep = Game.creeps[name];
+            roles[creep.memory.role].role.run(creep);
+        } catch(e) {
+            console.log(e.stack)
         }
     }
     getTombstone();

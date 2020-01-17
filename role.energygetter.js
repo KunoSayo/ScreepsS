@@ -57,4 +57,6 @@ let roleEnergyGetter = {
         }
     }
 };
-module.exports = roleEnergyGetter;
+module.exports = {
+    run: (creep) => roleEnergyGetter.run(creep)
+}

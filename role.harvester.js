@@ -40,13 +40,13 @@ let roleHaverster = {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     let mark = source.pos.toString();
                     goings[mark] = true;
-                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
                     return;
                 }
             }
             if (source = creep.pos.findClosestByPath(FIND_SOURCES)) {
                 if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
                 }
             } else {
                 creep.memory.transfer = true;
@@ -61,7 +61,7 @@ let roleHaverster = {
             let resType = _.keys(creep.store)[0];
             if (target && resType == RESOURCE_ENERGY) {
                 if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 99});
                     creep.say("go tower");
                 }
             } else if (target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -80,7 +80,7 @@ let roleHaverster = {
             })) {
                 let result;
                 if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}});
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 99});
                 } else if (result !== OK) {
                     console.log("transfer failed with " + target + ' ' + result)
                 }
@@ -92,4 +92,7 @@ let roleHaverster = {
         }
     }
 };
-module.exports = roleHaverster;
+module.exports = {
+    run: (creep) => roleHaverster.run(creep),
+    tickInit: () => roleHaverster.tickInit()
+};

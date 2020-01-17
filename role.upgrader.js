@@ -17,11 +17,11 @@ const roleUpgrader = {
 
         if (creep.memory.upgrading) {
             if (creep.upgradeController(Game.rooms['W26S12'].controller) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.rooms['W26S12'].controller, {visualizePathStyle: {stroke: '#ffffff'}});
+                creep.moveTo(Game.rooms['W26S12'].controller, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 99});
             }
         } else {
             if (creep.memory.outing && creep.room === Game.rooms['W26S12']) {
-                creep.moveTo(0, 13, {visualizePathStyle: {stroke: '#ff0000'}});
+                creep.moveTo(0, 13, {visualizePathStyle: {stroke: '#ff0000'}, reusePath: 99});
                 return;
             } else {
                 creep.memory.outing = false;
@@ -35,7 +35,7 @@ const roleUpgrader = {
             let source = sources[creepRoomName].storage;
             if (source) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
                     return;
                 }
             }
@@ -43,13 +43,16 @@ const roleUpgrader = {
             if (!source) {
                 if (creep.room === Game.rooms['W26S12']) {
                     creep.memory.outing = true;
-                    creep.moveTo(0, 13, {visualizePathStyle: {stroke: '#ff0000'}});
+                    creep.moveTo(0, 13, {visualizePathStyle: {stroke: '#ff0000'}, reusePath: 99});
                 }
             } else if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
             }
         }
     }
 };
 
-module.exports = roleUpgrader;
+module.exports = {
+    run: creep => roleUpgrader.run(creep),
+    tickInit: () => roleUpgrader.tickInit()
+};

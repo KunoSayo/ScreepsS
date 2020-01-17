@@ -43,4 +43,6 @@ const roleBuilder = {
         }
     }
 };
-module.exports = roleBuilder;
+module.exports = {
+    run: (creep) => roleBuilder.run(creep)
+}

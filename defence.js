@@ -10,7 +10,7 @@ const whitelist = ['KevinH'];
 let willGGStr;
 function tickTower(tower) {
     let target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-        filter: obj => whitelist.indexOf(obj.owner.name) == -1
+        filter: obj => whitelist.indexOf(obj.owner.username) == -1
     });
     
     if (target) {
@@ -33,26 +33,28 @@ function tickRempart(rampart) {
     rampart.setPublic(false);
 }
 
-module.exports = {
-    tick: () => {
-        for(let name in Game.structures) {
-            let structure = Game.structures[name];
-            let type = structure.structureType;
-            switch(type) {
-                case STRUCTURE_TOWER: {
-                    tickTower(structure);
-                    break;
-                }
-                case STRUCTURE_RAMPART: {
-                    tickRempart(structure);
-                    break;
-                }
+function tick() {
+    for(let name in Game.structures) {
+        let structure = Game.structures[name];
+        let type = structure.structureType;
+        switch(type) {
+            case STRUCTURE_TOWER: {
+                tickTower(structure);
+            break;
             }
-            if(structure.hits < structure.hitsMax) {
-                if((!willGGStr) || structure.hits < willGGStr.hits) {
-                    willGGStr = structure;
-                }
+                case STRUCTURE_RAMPART: {
+                tickRempart(structure);
+                break;
+            }
+        }
+        if(structure.hits < structure.hitsMax) {
+            if((!willGGStr) || structure.hits < willGGStr.hits) {
+                willGGStr = structure;
             }
         }
     }
+}
+
+module.exports = {
+    tick: () => tick()
 };
