@@ -3,7 +3,7 @@ const roles = {
         role: require('role.harvester'),
         isNeed: (num) => num < 3 || (_.filter(Game.creeps, c => c.memory.role === 'energygetter' && c.ticksToLive > 100).length && num < 4),
         key: true,
-        body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE]
+        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
     },
     "energygetter": {
         role: require('role.energygetter'),
@@ -32,9 +32,9 @@ const roles = {
     },
     'upgrader': {
         role: require('role.upgrader'),
-        isNeed: (num) => num < 12,
+        isNeed: (num) => num < 4,
         key: true,
-        body: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE]
+        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     },
     'builder': {
         role: require('role.builder'),
@@ -87,12 +87,15 @@ function checkCreep(spawnPoint = 'Spawn1', logMissing = false) {
     }
 }
 
-function defendRoom() {
+function getTombstone() {
     for (let roomName in Game.rooms) {
         let ggs = Game.rooms[roomName].find(FIND_TOMBSTONES);
         if (ggs && ggs.length > 0) {
             let movedCreep = {};
             for (let i in ggs) {
+                if(ggs[i].getUsedCapacity == 0) {
+                    continue;
+                }
                 let resType = _.keys(ggs[i].store)[0];
                 let creep = ggs[i].pos.findClosestByRange(FIND_MY_CREEPS, {
                     filter: (c) => {
@@ -136,7 +139,7 @@ module.exports.loop = function () {
             console.log('creep:' + name + ', role: ' + creep.memory.role + " cannot find a task");
         }
     }
-    defendRoom();
+    getTombstone();
     for (let taskName in tickTasks) {
         tickTasks[taskName].tick();
     }

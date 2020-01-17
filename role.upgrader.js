@@ -1,13 +1,16 @@
+const storageFilter = (structure) => (structure.structureType === STRUCTURE_STORAGE) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 500000;
+let sources = {};
 const roleUpgrader = {
-
+    tickInit: () => {
+        sources = {};
+    },
     /** @param {Creep} creep **/
     run: function (creep) {
-
+        const creepRoomName = creep.room.name.toString();
         if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] === 0) {
             creep.memory.upgrading = false;
             creep.say('harvest');
-        }
-        if (!creep.memory.upgrading && creep.store.getFreeCapacity() === 0) {
+        } else if (!creep.memory.upgrading && creep.store.getFreeCapacity() === 0) {
             creep.memory.upgrading = true;
             creep.say('upgrade');
         }
@@ -23,12 +26,15 @@ const roleUpgrader = {
             } else {
                 creep.memory.outing = false;
             }
-            let source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => (structure.structureType === STRUCTURE_STORAGE) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 500000
-            });
+            if(!sources[creepRoomName]) {
+                sources[creepRoomName] = {storage: creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                        filter: storageFilter
+                    })
+                }
+            }
+            let source = sources[creepRoomName].storage;
             if (source) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    let mark = source.pos.toString()
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
                     return;
                 }

@@ -14,6 +14,10 @@ let roleEnergyGetter = {
             if (spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(spawn);
             }
+            let target = creep.pos.findClosestByPath(FIND_SOURCES);
+            if (target) {
+                creep.harvest(target);
+            }
             return;
         }
         let flags = creep.pos.lookFor(LOOK_FLAGS);

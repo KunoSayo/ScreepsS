@@ -20,6 +20,20 @@ let util = {
             console.log(name + " and " + creep.pos + ' with time:' + creep.ticksToLive + " | role:" + creep.memory.role);
         }
         return _.keys(Game.creeps).length;
-    }
+    },
+    getClosest: (creep, structures) => {
+        let pos = creep.pos;
+        let minRange = 99999;
+        let closest;
+        for(let structure of structures) {
+            let range = creep.pos.getRangeTo(structure);
+            if(range < minRange) {
+                minRange = range;
+                closest = structure;
+            }
+        }
+        return closest;
+    },
+    logCpu: (msg) => console.log(msg + Game.cpu.getUsed())
 };
 module.exports = util;

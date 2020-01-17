@@ -6,29 +6,36 @@
  * var mod = require('role.harvester');
  * mod.thing == 'a thing'; // true
  */
+const util = require('util');
 let goings = {};
+const sourceFilter = (structure) => (structure.structureType === STRUCTURE_CONTAINER) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 100 && (!goings[structure.pos.toString()] || structure.store.getFreeCapacity(RESOURCE_ENERGY) < 1000)
+let sources = {};
 let roleHaverster = {
-    tickInit: () => goings = {},
+    tickInit: () => {
+        goings = {};
+        sources = {};
+    },
     /** @param {Creep} creep **/
     run: function (creep) {
+        const creepRoomName = creep.pos.roomName.toString();
         if (creep.memory.transfer && creep.store.getUsedCapacity() === 0) {
             creep.memory.transfer = false;
-        }
-        if (!creep.memory.transfer && creep.store.getFreeCapacity() === 0) {
+        } else if (!creep.memory.transfer && creep.store.getFreeCapacity() === 0) {
             creep.memory.transfer = true;
         }
         if (!creep.memory.transfer) {
             let source = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-            if (source) {
+            if (source && source.getUsedCapacity > 0) {
                 if (creep.pickup(source) === ERR_NOT_IN_RANGE) {
                     creep.say('go droped');
                     creep.moveTo(source);
                 }
                 return;
             }
-            source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => (structure.structureType === STRUCTURE_CONTAINER) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 100 && (!goings[structure.pos.toString()] || structure.store.getFreeCapacity(RESOURCE_ENERGY) < 1000)
-            });
+            if(!sources[creepRoomName]) {
+                sources[creepRoomName] = {strctures: creep.room.find(FIND_STRUCTURES, {filter: sourceFilter})};
+            }
+            source = util.getClosest(creep, sources[creepRoomName].strctures);
             if (source) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     let mark = source.pos.toString();

@@ -7,7 +7,7 @@
  * mod.thing == 'a thing'; // true
  */
 const whitelist = ['KevinH'];
-
+let willGGStr;
 function tickTower(tower) {
     let target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
         filter: obj => whitelist.indexOf(obj.owner.name) == -1
@@ -18,10 +18,10 @@ function tickTower(tower) {
     } else if (target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (creep) => creep.hits < creep.hitsMax})) {
         tower.heal(target);
     } else {
-        let targets = _.sortBy(tower.room.find(FIND_STRUCTURES, {
-            filter: structure => structure.hits < structure.hitsMax
-        }), 'hits');
-        if (target = targets[0]) {
+                // let targets = _.sortBy(tower.room.find(FIND_STRUCTURES, {
+            // filter: structure => structure.hits < structure.hitsMax
+        // }), 'hits');
+        if (target = willGGStr) {
             if (tower.store[RESOURCE_ENERGY] > 750 || target.hits < 5000) {
                 tower.repair(target);
             }
@@ -46,6 +46,11 @@ module.exports = {
                 case STRUCTURE_RAMPART: {
                     tickRempart(structure);
                     break;
+                }
+            }
+            if(structure.hits < structure.hitsMax) {
+                if((!willGGStr) || structure.hits < willGGStr.hits) {
+                    willGGStr = structure;
                 }
             }
         }
