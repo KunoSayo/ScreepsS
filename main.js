@@ -87,41 +87,6 @@ function checkCreep(spawnPoint = 'Spawn1', logMissing = false) {
     }
 }
 
-function getTombstone() {
-    for (let roomName in Game.rooms) {
-        let ggs = Game.rooms[roomName].find(FIND_TOMBSTONES);
-        if (ggs && ggs.length > 0) {
-            let movedCreep = {};
-            for (let i in ggs) {
-                if(ggs[i].getUsedCapacity == 0) {
-                    continue;
-                }
-                let resType = _.keys(ggs[i].store)[0];
-                let creep = ggs[i].pos.findClosestByRange(FIND_MY_CREEPS, {
-                    filter: (c) => {
-                        if(c.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && ggs[i].store[RESOURCE_ENERGY] > 0) {
-                            return !movedCreep[c.name];
-                        } else if(c.store.getFreeCapacity(_.keys(ggs[i].store)[0]) > 0 && c.memory.role === 'harvester') {
-                            return !movedCreep[c.name];
-                        }
-                        return false;
-                    }
-                });
-                if(creep) {
-                    let result = creep.withdraw(ggs[i], resType);
-                    movedCreep[creep.name] = true;
-                    if (result === ERR_NOT_IN_RANGE) {
-                        console.log("move " + creep + " to get tombstone");
-                        creep.moveTo(ggs[i]);
-                    } else if (result !== OK) {
-                        console.log("withdraw tombstone result:" + result);
-                    }
-                }
-            }
-        }
-    }
-}
-
 module.exports.loop = function () {
     checkCreep();
     for (let roleName in roles) {
@@ -138,7 +103,6 @@ module.exports.loop = function () {
             console.log(e.stack)
         }
     }
-    getTombstone();
     for (let taskName in tickTasks) {
         tickTasks[taskName].tick();
     }

@@ -8,7 +8,7 @@
  */
 const util = require('util');
 let goings = {};
-const sourceFilter = (structure) => (structure.structureType === STRUCTURE_CONTAINER) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 100 && (!goings[structure.pos.toString()] || structure.store.getFreeCapacity(RESOURCE_ENERGY) < 1000)
+const sourceFilter = (structure) => (structure.structureType === STRUCTURE_CONTAINER) && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 150 && (!goings[structure.pos.toString()] || structure.store.getFreeCapacity(RESOURCE_ENERGY) < 1000)
 let sources = {};
 let roleHaverster = {
     tickInit: () => {
@@ -25,10 +25,19 @@ let roleHaverster = {
         }
         if (!creep.memory.transfer) {
             let source = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-            if (source && source.getUsedCapacity > 0) {
-                if (creep.pickup(source) === ERR_NOT_IN_RANGE) {
-                    creep.say('go droped');
-                    creep.moveTo(source);
+            if (source) {
+                let droppedResData = goings[source.pos.toString()];
+                if(!droppedResData) {
+                    droppedResData = goings[source.pos.toString()] = {
+                        left: source.amount
+                    }
+                }
+                if(droppedResData.left > 0) {
+                    goings[source.pos.toString()].left = droppedResData.left - creep.getFreeCapacity;
+                    if (creep.pickup(source) === ERR_NOT_IN_RANGE) {
+                        creep.say('go droped');
+                        creep.moveTo(source);
+                    }   
                 }
                 return;
             }

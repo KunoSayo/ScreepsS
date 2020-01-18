@@ -37,9 +37,43 @@ function tickRempart(rampart) {
     }
 }
 
+function getTombStone(room) {
+    let ggs = room.find(FIND_TOMBSTONES);
+        if (ggs && ggs.length > 0) {
+            let movedCreep = {};
+            for (let i in ggs) {
+                let resType = _.keys(ggs[i].store)[0];
+                if(!resType) {
+                    continue;
+                }
+                let creep = ggs[i].pos.findClosestByRange(FIND_MY_CREEPS, {
+                    filter: (c) => {
+                        if(c.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && ggs[i].store[RESOURCE_ENERGY] > 0) {
+                            return !movedCreep[c.name];
+                        } else if(c.store.getFreeCapacity(_.keys(ggs[i].store)[0]) > 0 && c.memory.role === 'harvester') {
+                            return !movedCreep[c.name];
+                        }
+                        return false;
+                    }
+                });
+                if(creep) {
+                    let result = creep.withdraw(ggs[i], resType);
+                    movedCreep[creep.name] = true;
+                    if (result === ERR_NOT_IN_RANGE) {
+                        console.log("move " + creep + " to get tombstone");
+                        creep.moveTo(ggs[i]);
+                    } else if (result !== OK) {
+                        console.log("withdraw tombstone result:" + result);
+                    }
+                }
+            }
+        }
+}
+
 function tick() {
     for(let roomName in Game.rooms) {
         let room = Game.rooms[roomName];
+        getTombStone(room);
         for(let structure of room.find(FIND_STRUCTURES)) {
             let type = structure.structureType;
             switch(type) {
