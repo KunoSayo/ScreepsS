@@ -32,14 +32,14 @@ const roles = {
     },
     'upgrader': {
         role: require('role.upgrader'),
-        isNeed: (num) => num < 4,
+        isNeed: (num) => num < 5,
         key: true,
         body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     },
     'builder': {
         role: require('role.builder'),
         isNeed: (num) => num < 2 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE]
+        body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE]
     }
 };
 const tickTasks = {

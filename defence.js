@@ -18,8 +18,8 @@ function tickTower(tower) {
     } else if (target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (creep) => creep.hits < creep.hitsMax})) {
         tower.heal(target);
     } else {
-                // let targets = _.sortBy(tower.room.find(FIND_STRUCTURES, {
-            // filter: structure => structure.hits < structure.hitsMax
+        // let targets = _.sortBy(tower.room.find(FIND_STRUCTURES, {
+        //     filter: structure => structure.hits < structure.hitsMax
         // }), 'hits');
         if (target = willGGStr) {
             if (tower.store[RESOURCE_ENERGY] > 750 || target.hits < 5000) {
@@ -30,26 +30,30 @@ function tickTower(tower) {
 }
 
 function tickRempart(rampart) {
-    rampart.setPublic(false);
+    if(rampart.isPublic) {
+        rampart.setPublic(false);
+    }
 }
 
 function tick() {
-    for(let name in Game.structures) {
-        let structure = Game.structures[name];
-        let type = structure.structureType;
-        switch(type) {
-            case STRUCTURE_TOWER: {
-                tickTower(structure);
-            break;
+    for(let roomName in Game.rooms) {
+        let room = Game.rooms[roomName];
+        for(let structure of room.find(FIND_STRUCTURES)) {
+            let type = structure.structureType;
+            switch(type) {
+                case STRUCTURE_TOWER: {
+                    tickTower(structure);
+                    break;
+                }
+                    case STRUCTURE_RAMPART: {
+                    tickRempart(structure);
+                    break;
+                }
             }
-                case STRUCTURE_RAMPART: {
-                tickRempart(structure);
-                break;
-            }
-        }
-        if(structure.hits < structure.hitsMax) {
-            if((!willGGStr) || structure.hits < willGGStr.hits) {
-                willGGStr = structure;
+            if(structure.hits < structure.hitsMax) {
+                if((willGGStr == undefined) || structure.hits < willGGStr.hits) {
+                    willGGStr = structure;
+                }
             }
         }
     }
