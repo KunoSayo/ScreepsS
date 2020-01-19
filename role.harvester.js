@@ -68,10 +68,12 @@ let roleHaverster = {
                     let type = structure.structureType;
                     let isTypeRight = (type === STRUCTURE_EXTENSION || type == STRUCTURE_LINK || type === STRUCTURE_SPAWN || type === STRUCTURE_TOWER) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                    return isTypeRight;
+                    return isTypeRight && (!goingManager.isWent(structure.pos.toString()) || structure.store.getFreeCapacity(RESOURCE_ENERGY) > 150);
                 }
             }))) {
                 let result;
+                creep.say(target.structureType);
+                goingManager.goTo(creep, target);
                 if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 99});
                 } else if (result !== OK) {

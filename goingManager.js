@@ -11,10 +11,17 @@ function tick() {
     goings = {}
 }
 
+function isWent(key) {
+    return goings[key] !== undefined;
+}
+function goTo(creep, s) {
+    goings[s.pos.toString()] = {who: creep.id};
+}
+
 function transferAndGoStr(creep, s) {
     const key = s.pos.toString();
     if(!goings[key]) {
-        goings[key] = {going: creep.id};
+        goings[key] = {who: creep.id};
         if(creep.transfer(s, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
             creep.moveTo(s, {reusePath: 99});
         }
@@ -47,5 +54,8 @@ function shouldAndGoDropped(creep, res) {
 
 module.exports = {
     tick: () => tick(),
-    shouldAndGoDropped: (creep, res) => shouldAndGoDropped(creep, res)
+    shouldAndGoDropped: (creep, res) => shouldAndGoDropped(creep, res),
+    isWent: isWent,
+    transferAndGoStr: (creep, s) => transferAndGoStr(creep, s),
+    goTo: goTo
 };
