@@ -14,7 +14,7 @@ function tick() {
         if(sender.cooldown === 0) {
             for(let receiverID of receivers) {
                 let receiver = Game.getObjectById(receiverID);
-                if(receiver.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                if(receiver.store.getFreeCapacity(RESOURCE_ENERGY) > 450) {
                     sender.transferEnergy(receiver);
                 }
             }

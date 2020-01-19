@@ -67,10 +67,9 @@ function checkCreep(spawnPoint = 'Spawn1', logMissing = false) {
     if (Game.spawns[spawnPoint].isActive) {
         let onlyKey = false;
         for (let roleName in roles) {
-            let roledCreeps = nowCreeps[roleName].left;
+            let count = nowCreeps[roleName].left;
             let spawn = Game.spawns[spawnPoint];
             let role = roles[roleName];
-            let count = roledCreeps.length;
             if (count < 2 && !role.disabled && role.key && spawn.room.energyAvailable <= 500) {
                 let result = util.spawnCreep(spawn, roleName, createCreepName('[ERR]' + roleName), [WORK, WORK, CARRY, MOVE]);
                 if (result === OK) {
@@ -106,8 +105,8 @@ function tick() {
         try {
             let creep = Game.creeps[name];
             let creepRole = creep.memory.role;
-            roles[creepRole].role.run(creep);
             if(creepRole) {
+                roles[creepRole].role.run(creep);
                 ++nowCreeps[creepRole].left;
             }
         } catch(e) {
