@@ -7,7 +7,7 @@
  * mod.thing == 'a thing'; // true
  */
 const whitelist = ['KevinH'];
-let willGGStrID;
+let ggs1;
 function tickTower(tower) {
     let target = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
         filter: obj => whitelist.indexOf(obj.owner.username) == -1
@@ -21,7 +21,7 @@ function tickTower(tower) {
         // let targets = _.sortBy(tower.room.find(FIND_STRUCTURES, {
         //     filter: structure => structure.hits < structure.hitsMax
         // }), 'hits');
-        if (target = Game.getObjectById(willGGStrID)) {
+        if (target = Game.getObjectById(ggs1)) {
             if (tower.store[RESOURCE_ENERGY] > 750 || target.hits < 5000) {
                 if(target.hits < target.hitsMax) {
                     tower.repair(target);
@@ -71,10 +71,12 @@ function getTombStone(room) {
 }
 
 function tick() {
+    let i = 0;
     for(let roomName in Game.rooms) {
         let room = Game.rooms[roomName];
         getTombStone(room);
         for(let structure of room.find(FIND_STRUCTURES)) {
+            ++i;
             let type = structure.structureType;
             switch(type) {
                 case STRUCTURE_TOWER: {
@@ -87,9 +89,9 @@ function tick() {
                 }
             }
             if(structure.hits < structure.hitsMax) {
-                let ggstr = Game.getObjectById(willGGStrID);
+                let ggstr = Game.getObjectById(ggs1);
                 if((!ggstr) || (ggstr.hits === ggstr.hitsMax) || structure.hits < ggstr.hits) {
-                    willGGStrID = structure.id;
+                    ggs1 = structure.id;
                 }
             }
         }

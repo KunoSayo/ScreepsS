@@ -27,6 +27,7 @@ const roleUpgrader = {
                         creep.moveTo(source);
                         creep.say("go link");
                     }
+                    creep.memory.upgrading = true;
                     return;
                 }
             }

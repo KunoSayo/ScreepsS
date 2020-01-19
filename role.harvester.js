@@ -7,12 +7,10 @@
  * mod.thing == 'a thing'; // true
  */
 const util = require('util');
-let goings = {};
 const goingManager = require('goingManager');
 const sourceFilter = (structure) => {
-    let went = goings[structure.pos.toString()];
     let type = structure.structureType;
-    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && (!went || structure.store.getFreeCapacity(RESOURCE_ENERGY) < 1000)) {
+    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && (structure.store.getFreeCapacity(RESOURCE_ENERGY) < 1000)) {
         return true;
     } else if(type === STRUCTURE_STORAGE && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100000) {
         return true;
@@ -21,7 +19,6 @@ const sourceFilter = (structure) => {
 let sources = {};
 let roleHaverster = {
     tickInit: () => {
-        goings = {};
         sources = {};
     },
     /** @param {Creep} creep **/
@@ -43,8 +40,6 @@ let roleHaverster = {
             source = util.getClosest(creep, sources[creepRoomName].strctures);
             if (source) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    let mark = source.pos.toString();
-                    goings[mark] = true;
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
                     return;
                 }
@@ -75,9 +70,7 @@ let roleHaverster = {
                     let isTypeRight = (type === STRUCTURE_EXTENSION || type == STRUCTURE_LINK || type === STRUCTURE_SPAWN || type === STRUCTURE_TOWER) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                     if (isTypeRight && creep.store[RESOURCE_ENERGY] > 0) {
-                        if (!goings[structure.pos.toString()]) {
-                            return true;
-                        }
+                        return true;
                     }
                     return false;
                 }
@@ -88,7 +81,6 @@ let roleHaverster = {
                 } else if (result !== OK) {
                     console.log("transfer failed with " + target + ' ' + result)
                 }
-                goings[target.pos.toString()] = true;
             } else if(target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => structure.structureType === STRUCTURE_STORAGE && structure.store.getFreeCapacity(resType) > 0
             })) {
