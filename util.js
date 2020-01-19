@@ -21,15 +21,22 @@ let util = {
         }
         return _.keys(Game.creeps).length;
     },
-    getClosest: (creep, structures) => {
+    getClosest: (creep, structures, typeFirst = STRUCTURE_CONTAINER) => {
         let pos = creep.pos;
         let minRange = 99999;
         let closest;
-        for(let structure of structures) {
-            let range = creep.pos.getRangeTo(structure);
+        for(let s of structures) {
+            if(s.structureType === typeFirst && closest && closest.structureType !== typeFirst) {
+                closest = s;
+                continue;
+            }
+            if(closest && closest.structureType === typeFirst && s.structureType !== typeFirst) {
+                continue;
+            }
+            let range = creep.pos.getRangeTo(s);
             if(range < minRange) {
                 minRange = range;
-                closest = structure;
+                closest = s;
             }
         }
         return closest;
