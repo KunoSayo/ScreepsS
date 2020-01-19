@@ -50,7 +50,7 @@ function getTombStone(room) {
                     filter: (c) => {
                         if(c.store.getFreeCapacity(RESOURCE_ENERGY) > 0 && ggs[i].store[RESOURCE_ENERGY] > 0) {
                             return !movedCreep[c.name];
-                        } else if(c.store.getFreeCapacity(_.keys(ggs[i].store)[0]) > 0 && c.memory.role === 'harvester') {
+                        } else if(c.store.getFreeCapacity() > 0 && c.memory.role === 'harvester') {
                             return !movedCreep[c.name];
                         }
                         return false;
