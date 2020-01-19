@@ -3,7 +3,7 @@ const roles = {
         role: require('role.harvester'),
         isNeed: (num) => num < 3 || (_.filter(Game.creeps, c => c.memory.role === 'energygetter' && c.ticksToLive > 100).length && num < 4),
         key: true,
-        body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE]
+        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     },
     "energygetter": {
         role: require('role.energygetter'),
@@ -34,12 +34,12 @@ const roles = {
         role: require('role.upgrader'),
         isNeed: (num) => num < 5,
         key: true,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
+        body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     },
     'builder': {
         role: require('role.builder'),
-        isNeed: (num) => num < 1 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
-        body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE]
+        isNeed: (num) => num < 2 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
+        body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     }
 };
 const tickTasks = {

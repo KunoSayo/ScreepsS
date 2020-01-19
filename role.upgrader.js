@@ -28,7 +28,7 @@ const roleUpgrader = {
             }
             let source = Game.getObjectById('5e229d0ff9d0a63ba16ee1e7')
             if(creep.pos.getRangeTo(source) < 5) {
-                if(source.store.getUsedCapacity[RESOURCE_ENERGY] > 0) {
+                if(source.store.getUsedCapacity(RESOURCE_ENERGY) > 0) {
                     if(creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                         creep.moveTo(source);
                         creep.say("go link");

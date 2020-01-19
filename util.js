@@ -7,7 +7,7 @@
  * mod.thing == 'a thing'; // true
  */
 let util = {
-    spawnCreep: (spawnPoint, role, name, body = [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE]) => {
+    spawnCreep: (spawnPoint, role, name, body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE]) => {
         let result = spawnPoint.spawnCreep(body, name, {memory: {role: role}});
         if (result == OK) {
             console.log('spawned ' + role + ' with name:' + name + ', with body:' + body);

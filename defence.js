@@ -87,7 +87,8 @@ function tick() {
                 }
             }
             if(structure.hits < structure.hitsMax) {
-                if((!willGGStrID) || structure.hits < Game.getObjectById(willGGStrID).hits) {
+                let ggstr = Game.getObjectById(willGGStrID);
+                if((!ggstr) || (ggstr.hits === ggstr.hitsMax) || structure.hits < ggstr.hits) {
                     willGGStrID = structure.id;
                 }
             }
