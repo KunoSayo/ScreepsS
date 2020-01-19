@@ -34,6 +34,7 @@ let roleHaverster = {
         if (!creep.memory.transfer) {
             let source = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
             if (source) {
+                let resType = _.keys(source.store)[0]
                 let droppedResData = goings[source.pos.toString()];
                 if(!droppedResData) {
                     droppedResData = goings[source.pos.toString()] = {
@@ -41,7 +42,7 @@ let roleHaverster = {
                     }
                 }
                 if(droppedResData.left > 0) {
-                    goings[source.pos.toString()].left = droppedResData.left - creep.getFreeCapacity;
+                    goings[source.pos.toString()].left = droppedResData.left - creep.store.getFreeCapacity(resType);
                     if (creep.pickup(source) === ERR_NOT_IN_RANGE) {
                         creep.say('go droped');
                         creep.moveTo(source);
