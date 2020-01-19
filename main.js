@@ -3,7 +3,7 @@ const roles = {
         role: require('role.harvester'),
         isNeed: (num) => num < 3 || (_.filter(Game.creeps, c => c.memory.role === 'energygetter' && c.ticksToLive > 100).length && num < 4),
         key: true,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
+        body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE]
     },
     "energygetter": {
         role: require('role.energygetter'),
@@ -38,12 +38,13 @@ const roles = {
     },
     'builder': {
         role: require('role.builder'),
-        isNeed: (num) => num < 2 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
+        isNeed: (num) => num < 1 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
         body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE]
     }
 };
 const tickTasks = {
-    defence: require('defence')
+    defence: require('defence'),
+    link: require('link')
 };
 const util = require('util');
 
@@ -100,10 +101,14 @@ module.exports.loop = function () {
             let creep = Game.creeps[name];
             roles[creep.memory.role].role.run(creep);
         } catch(e) {
-            console.log(e.stack)
+            console.log(e.stack);
         }
     }
     for (let taskName in tickTasks) {
-        tickTasks[taskName].tick();
+        try {
+            tickTasks[taskName].tick();
+        } catch(e) {
+            console.log(e.stack);
+        }
     }
 };

@@ -26,13 +26,23 @@ const roleUpgrader = {
             } else {
                 creep.memory.outing = false;
             }
+            let source = Game.getObjectById('5e229d0ff9d0a63ba16ee1e7')
+            if(creep.pos.getRangeTo(source) < 5) {
+                if(source.store.getUsedCapacity[RESOURCE_ENERGY] > 0) {
+                    if(creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(source);
+                        creep.say("go link");
+                    }
+                    return;
+                }
+            }
             if(!sources[creepRoomName]) {
                 sources[creepRoomName] = {storage: creep.pos.findClosestByPath(FIND_STRUCTURES, {
                         filter: storageFilter
                     })
                 }
             }
-            let source = sources[creepRoomName].storage;
+            source = sources[creepRoomName].storage;
             if (source) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
