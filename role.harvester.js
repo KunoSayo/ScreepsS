@@ -8,6 +8,7 @@
  */
 const util = require('util');
 let goings = {};
+const goingManager = require('goingManager');
 const sourceFilter = (structure) => {
     let went = goings[structure.pos.toString()];
     let type = structure.structureType;
@@ -33,22 +34,8 @@ let roleHaverster = {
         }
         if (!creep.memory.transfer) {
             let source = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-            if (source) {
-                let resType = _.keys(source.store)[0]
-                let droppedResData = goings[source.pos.toString()];
-                if(!droppedResData) {
-                    droppedResData = goings[source.pos.toString()] = {
-                        left: source.amount
-                    }
-                }
-                if(droppedResData.left > 0) {
-                    goings[source.pos.toString()].left = droppedResData.left - creep.store.getFreeCapacity(resType);
-                    if (creep.pickup(source) === ERR_NOT_IN_RANGE) {
-                        creep.say('go droped');
-                        creep.moveTo(source);
-                    }
-                    return;
-                }
+            if(goingManager.shouldAndGoDropped(creep, source)) {
+                return;
             }
             if(!sources[creepRoomName]) {
                 sources[creepRoomName] = {strctures: creep.room.find(FIND_STRUCTURES, {filter: sourceFilter})};

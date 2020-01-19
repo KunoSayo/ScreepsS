@@ -47,7 +47,7 @@ const tickTasks = {
     link: require('link')
 };
 const util = require('util');
-
+const goingManager = require('goingManager');
 function createCreepName(name) {
     let i = 0;
     while (Game.creeps[name + i]) {
@@ -90,6 +90,7 @@ function checkCreep(spawnPoint = 'Spawn1', logMissing = false) {
 
 module.exports.loop = function () {
     checkCreep();
+    goingManager.tickInit();
     for (let roleName in roles) {
         let role = roles[roleName];
         if (role.role.tickInit) {
