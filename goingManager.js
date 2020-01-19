@@ -7,7 +7,7 @@
  * mod.thing == 'a thing'; // true
  */
 let goings = {}
-function tickInit() {
+function tick() {
     goings = {}
 }
 
@@ -34,6 +34,6 @@ function shouldAndGoDropped(creep, res) {
 }
 
 module.exports = {
-    tickInit: () => tickInit(),
+    tick: () => tick(),
     shouldAndGoDropped: (creep, res) => shouldAndGoDropped(creep, res)
 };

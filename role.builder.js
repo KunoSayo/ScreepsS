@@ -40,7 +40,7 @@ const roleBuilder = {
                 if ((result = creep.withdraw(source, RESOURCE_ENERGY)) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#00FF00'}});
                 }
-                if(result != OK) {
+                if(result !== OK) {
                     build(creep, false);
                 }
             } else if (source = creep.pos.findClosestByPath(FIND_SOURCES)) {
@@ -48,7 +48,7 @@ const roleBuilder = {
                 if ((result = creep.harvest(source)) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
                 }
-                if(result != OK) {
+                if(result !== OK) {
                     build(creep, false);
                 }
             }
