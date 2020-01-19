@@ -10,7 +10,7 @@ const util = require('util');
 const goingManager = require('goingManager');
 const sourceFilter = (structure) => {
     let type = structure.structureType;
-    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 150) && (structure.store.getFreeCapacity(RESOURCE_ENERGY) < 1000)) {
+    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 150)) {
         return true;
     } else if(type === STRUCTURE_STORAGE && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100000) {
         return true;
@@ -52,7 +52,6 @@ let roleHaverster = {
                 creep.memory.transfer = true;
             }
         } else {
-            
             let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType === STRUCTURE_TOWER) && structure.store.getUsedCapacity(RESOURCE_ENERGY) < 500;
@@ -64,17 +63,14 @@ let roleHaverster = {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 99});
                     creep.say("go tower");
                 }
-            } else if (target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            } else if ((creep.store[RESOURCE_ENERGY] > 0) && (target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     let type = structure.structureType;
                     let isTypeRight = (type === STRUCTURE_EXTENSION || type == STRUCTURE_LINK || type === STRUCTURE_SPAWN || type === STRUCTURE_TOWER) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                    if (isTypeRight && creep.store[RESOURCE_ENERGY] > 0) {
-                        return true;
-                    }
-                    return false;
+                    return isTypeRight;
                 }
-            })) {
+            }))) {
                 let result;
                 if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 99});

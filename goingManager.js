@@ -11,6 +11,18 @@ function tick() {
     goings = {}
 }
 
+function transferAndGoStr(creep, s) {
+    const key = s.pos.toString();
+    if(!goings[key]) {
+        goings[key] = {going: creep.id};
+        if(creep.transfer(s, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.moveTo(s, {reusePath: 99});
+        }
+        return true
+    }
+    return false;
+}
+
 function shouldAndGoDropped(creep, res) {
     if(res && res.amount) {
         const key = res.pos.toString();
