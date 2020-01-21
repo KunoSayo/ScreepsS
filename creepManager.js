@@ -66,8 +66,9 @@ let nowCreeps = {};
 function checkCreep(spawnPoint = 'Spawn1', logMissing = false) {
     if (Game.spawns[spawnPoint].isActive) {
         let onlyKey = false;
+        let room = Game.spawns[spawnPoint].room;
         for (let roleName in roles) {
-            let count = nowCreeps[roleName].left;
+            let count = nowCreeps[room]? (nowCreeps[room][roleName] ? nowCreeps[room][roleName].left : 0) : 0;
             let spawn = Game.spawns[spawnPoint];
             let role = roles[roleName];
             if (count < 2 && !role.disabled && role.key && spawn.room.energyAvailable <= 500) {
@@ -99,15 +100,21 @@ function tick() {
         if (role.role.tickInit) {
             role.role.tickInit();
         }
-        nowCreeps[roleName] = {left: 0};
     }
     for (let name in Game.creeps) {
         try {
             let creep = Game.creeps[name];
+            let room = creep.room;
             let creepRole = creep.memory.role;
             if(creepRole) {
                 roles[creepRole].role.run(creep);
-                ++nowCreeps[creepRole].left;
+                if(!nowCreeps[room]) {
+                    nowCreeps[room] = {};
+                }
+                if(!nowCreeps[room][creepRole]) {
+                    nowCreeps[room][creepRole] = {left: 0};
+                }
+                ++nowCreeps[room][creepRole].left;
             }
         } catch(e) {
             console.log(e.stack);

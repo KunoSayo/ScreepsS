@@ -16,6 +16,7 @@ const sourceFilter = (structure) => {
         return true;
     }
 }
+const linkNeeds = ['5bbcab819099fc012e633a4f'];
 let sources = {};
 let roleHaverster = {
     tickInit: () => {
@@ -66,8 +67,11 @@ let roleHaverster = {
             } else if ((creep.store[RESOURCE_ENERGY] > 0) && (target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     let type = structure.structureType;
-                    let isTypeRight = (type === STRUCTURE_EXTENSION || type == STRUCTURE_LINK || type === STRUCTURE_SPAWN || type === STRUCTURE_TOWER) &&
+                    let isTypeRight = (type === STRUCTURE_EXTENSION || type === STRUCTURE_SPAWN || type === STRUCTURE_TOWER) &&
                         structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    if(!isTypeRight && (linkNeeds.indexOf(structure.id) !== -1)) {
+                        isTypeRight = true;
+                    }
                     return isTypeRight && (!goingManager.isWent(structure.pos.toString()) || structure.store.getFreeCapacity(RESOURCE_ENERGY) > 150);
                 }
             }))) {
