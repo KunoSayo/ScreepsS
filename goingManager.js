@@ -30,6 +30,28 @@ function transferAndGoStr(creep, s) {
     return false;
 }
 
+function shouldAndWithdraw(creep, s, type, move = true) {
+    if(s && type && s.store.getUsedCapacity(type) > 0) {
+        const key = s.pos.toString();
+        let data = goings[key];
+        if(!data) {
+            data = goings[key] = {
+                left: s.store.getUsedCapacity(type)
+            }
+        }
+        if(move && data.left > 0) {
+            goings[key].left = data.left - creep.store.getFreeCapacity(resType);
+            if(creep.withdraw(s, type) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(s, {reusePath: 99});
+                creep.say('go dropped');
+            }
+            return true;
+        }
+        return data.left > 0;
+    }
+    return false;
+}
+
 function shouldAndGoDropped(creep, res) {
     if(res && res.amount) {
         const key = res.pos.toString();

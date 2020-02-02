@@ -11,6 +11,7 @@ module.exports.loop = function () {
             tickTasks[taskName].tick();
         } catch(e) {
             console.log(e.stack);
+            Game.notify(e.stack);
         }
     }
 };

@@ -14,6 +14,7 @@ function tickTower(tower) {
     });
     
     if (target) {
+        Game.notify(target.owner.username + ' was in room (try to attacking)');
         tower.attack(target);
     } else if (target = tower.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (creep) => creep.hits < creep.hitsMax})) {
         tower.heal(target);
@@ -22,8 +23,8 @@ function tickTower(tower) {
         //     filter: structure => structure.hits < structure.hitsMax
         // }), 'hits');
         if (target = Game.getObjectById(ggs1)) {
-            if (tower.store[RESOURCE_ENERGY] > 750 || target.hits < 5000) {
-                if(target.hits < target.hitsMax) {
+            if (tower.store[RESOURCE_ENERGY] > 750 || target.hits < 10000) {
+                if((target.hitsMax - target.hits) > 750) {
                     tower.repair(target);
                 }
             }
@@ -88,9 +89,9 @@ function tick() {
                     break;
                 }
             }
-            if(structure.hits < structure.hitsMax) {
+            if((structure.hitsMax - structure.hits) > 750) {
                 let ggstr = Game.getObjectById(ggs1);
-                if((!ggstr) || (ggstr.hits === ggstr.hitsMax) || structure.hits < ggstr.hits) {
+                if((!ggstr) || (ggstr.hitsMax - ggstr.hits <= 750) || structure.hits < ggstr.hits) {
                     ggs1 = structure.id;
                 }
             }

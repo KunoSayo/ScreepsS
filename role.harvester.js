@@ -10,13 +10,13 @@ const util = require('util');
 const goingManager = require('goingManager');
 const sourceFilter = (structure) => {
     let type = structure.structureType;
-    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 150)) {
+    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 100)) {
         return true;
     } else if(type === STRUCTURE_STORAGE && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100000) {
         return true;
     }
 }
-const linkNeeds = ['5bbcab819099fc012e633a4f'];
+const linkNeeds = ['5e2166ec3938700dc96e6c88'];
 let sources = {};
 let roleHaverster = {
     tickInit: () => {
@@ -41,13 +41,13 @@ let roleHaverster = {
             source = util.getClosest(creep, sources[creepRoomName].strctures);
             if (source) {
                 if (creep.withdraw(source, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 0});
                     return;
                 }
             }
             if (source = creep.pos.findClosestByPath(FIND_SOURCES)) {
                 if (creep.harvest(source) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 99});
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}, reusePath: 0});
                 }
             } else {
                 creep.memory.transfer = true;
@@ -61,16 +61,16 @@ let roleHaverster = {
             let resType = _.keys(creep.store)[0];
             if (target && resType == RESOURCE_ENERGY) {
                 if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 99});
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 0});
                     creep.say("go tower");
                 }
             } else if ((creep.store[RESOURCE_ENERGY] > 0) && (target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     let type = structure.structureType;
-                    let isTypeRight = (type === STRUCTURE_EXTENSION || type === STRUCTURE_SPAWN || type === STRUCTURE_TOWER) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    let isTypeRight = ((type === STRUCTURE_EXTENSION || type === STRUCTURE_SPAWN) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) 
+                        || (type === STRUCTURE_TOWER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > creep.store.getUsedCapacity(RESOURCE_ENERGY));
                     if(!isTypeRight && (linkNeeds.indexOf(structure.id) !== -1)) {
-                        isTypeRight = true;
+                        isTypeRight = structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                     }
                     return isTypeRight && (!goingManager.isWent(structure.pos.toString()) || structure.store.getFreeCapacity(RESOURCE_ENERGY) > 150);
                 }
@@ -79,7 +79,7 @@ let roleHaverster = {
                 creep.say(target.structureType);
                 goingManager.goTo(creep, target);
                 if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 99});
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 0});
                 } else if (result !== OK) {
                     console.log("transfer failed with " + target + ' ' + result)
                 }
@@ -88,7 +88,7 @@ let roleHaverster = {
             })) {
                 let result;
                 if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 99});
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 0});
                 } else if (result !== OK) {
                     console.log("transfer failed with " + target + ' ' + result)
                 }

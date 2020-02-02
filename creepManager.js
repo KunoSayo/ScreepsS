@@ -10,9 +10,9 @@ const util = require('util')
 const roles = {
     'harvester': {
         role: require('role.harvester'),
-        isNeed: (num) => num < 3 || (_.filter(Game.creeps, c => c.memory.role === 'energygetter' && c.ticksToLive > 100).length && num < 4),
+        isNeed: (num) => num < 3,
         key: true,
-        body: [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
+        body: [WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     },
     "energygetter": {
         role: require('role.energygetter'),
@@ -41,13 +41,13 @@ const roles = {
     },
     'upgrader': {
         role: require('role.upgrader'),
-        isNeed: (num) => num < 5,
+        isNeed: (num) => num < 2,
         key: true,
         body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     },
     'builder': {
         role: require('role.builder'),
-        isNeed: (num) => num < 2 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
+        isNeed: (num) => num < 1 && Game.rooms['W26S12'].find(FIND_CONSTRUCTION_SITES).length > 0,
         body: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE]
     }
 };
@@ -74,6 +74,7 @@ function checkCreep(spawnPoint = 'Spawn1', logMissing = false) {
             if (count < 2 && !role.disabled && role.key && spawn.room.energyAvailable <= 500) {
                 let result = util.spawnCreep(spawn, roleName, createCreepName('[ERR]' + roleName), [WORK, WORK, CARRY, MOVE]);
                 if (result === OK) {
+                    Game.notify("spawned error creep for key role: " + roleName);
                     return;
                 } else {
                     console.log("Can't spawn creep for error! :" + result);
