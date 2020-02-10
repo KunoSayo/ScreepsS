@@ -84,19 +84,10 @@ let roleHaverster = {
                     console.log("transfer failed with " + target + ' ' + result)
                 }
             } else if(target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => structure.structureType === STRUCTURE_STORAGE && structure.store.getFreeCapacity() > 0
+                filter: (structure) => (structure.structureType === STRUCTURE_STORAGE && structure.store.getFreeCapacity() > 0) 
+                || (structure.structureType === STRUCTURE_TOWER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > creep.store.getUsedCapacity(RESOURCE_ENERGY))
             })) {
                 let result;
-                if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 0});
-                } else if (result !== OK) {
-                    console.log("transfer failed with " + target + ' ' + result)
-                }
-            } else if((target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return structure.structureType === STRUCTURE_TOWER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > creep.store.getUsedCapacity(RESOURCE_ENERGY)
-                }
-            }))){
                 if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 0});
                 } else if (result !== OK) {
