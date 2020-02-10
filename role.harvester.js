@@ -10,7 +10,7 @@ const util = require('util');
 const goingManager = require('goingManager');
 const sourceFilter = (structure) => {
     let type = structure.structureType;
-    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 100)) {
+    if((type === STRUCTURE_CONTAINER && structure.store.getUsedCapacity(RESOURCE_ENERGY) >= 150)) {
         return true;
     } else if(type === STRUCTURE_STORAGE && structure.store.getUsedCapacity(RESOURCE_ENERGY) > 100000) {
         return true;
@@ -68,7 +68,7 @@ let roleHaverster = {
                 filter: (structure) => {
                     let type = structure.structureType;
                     let isTypeRight = ((type === STRUCTURE_EXTENSION || type === STRUCTURE_SPAWN) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) 
-                        || (type === STRUCTURE_TOWER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > creep.store.getUsedCapacity(RESOURCE_ENERGY));
+                        || (type === STRUCTURE_TOWER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 300);
                     if(!isTypeRight && (linkNeeds.indexOf(structure.id) !== -1)) {
                         isTypeRight = structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                     }
@@ -84,9 +84,19 @@ let roleHaverster = {
                     console.log("transfer failed with " + target + ' ' + result)
                 }
             } else if(target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => structure.structureType === STRUCTURE_STORAGE && structure.store.getFreeCapacity(resType) > 0
+                filter: (structure) => structure.structureType === STRUCTURE_STORAGE && structure.store.getFreeCapacity() > 0
             })) {
                 let result;
+                if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 0});
+                } else if (result !== OK) {
+                    console.log("transfer failed with " + target + ' ' + result)
+                }
+            } else if((target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType === STRUCTURE_TOWER && structure.store.getFreeCapacity(RESOURCE_ENERGY) > creep.store.getUsedCapacity(RESOURCE_ENERGY)
+                }
+            }))){
                 if ((result = creep.transfer(target, resType)) === ERR_NOT_IN_RANGE) {
                     creep.moveTo(target, {visualizePathStyle: {stroke: '#0000ff'}, reusePath: 0});
                 } else if (result !== OK) {
