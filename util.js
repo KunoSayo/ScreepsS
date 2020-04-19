@@ -9,7 +9,7 @@
 let util = {
     spawnCreep: (spawnPoint, role, name, body = [WORK, WORK, CARRY, CARRY, MOVE, MOVE]) => {
         let result = spawnPoint.spawnCreep(body, name, {memory: {role: role}});
-        if (result == OK) {
+        if (result === OK) {
             console.log('spawned ' + role + ' with name:' + name + ', with body:' + body);
         }
         return result;

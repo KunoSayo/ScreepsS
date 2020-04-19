@@ -2,7 +2,7 @@ function build(creep, shouldMove) {
     let target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
     if(target) {
         if(creep.build(target) === ERR_NOT_IN_RANGE && shouldMove) {
-            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 99});
+            creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
         }
     } else if (!creep.room.find(FIND_CONSTRUCTION_SITES).length) {
         if (Game.spawns['Spawn1'].recycleCreep(creep) == ERR_NOT_IN_RANGE) {
@@ -10,7 +10,7 @@ function build(creep, shouldMove) {
         }
     }
 }
-
+const goingManager = require('goingManager');
 const roleBuilder = {
 
     /** @param {Creep} creep **/
@@ -26,12 +26,13 @@ const roleBuilder = {
         if (creep.memory.building) {
             build(creep, true);
         } else {
-            let source = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-            if (source) {
-                if (creep.pickup(source) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source);
+            let sources = creep.room.find(FIND_DROPPED_RESOURCES);
+            
+            let source;
+            for(source of sources) {
+                if(goingManager.shouldAndGoDropped(creep, source)) {
+                    return;
                 }
-                return;
             }
             if (source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: structure => structure.structureType == STRUCTURE_STORAGE && structure.store[RESOURCE_ENERGY] > 50000

@@ -42,10 +42,13 @@ function shouldAndWithdraw(creep, s, type, move = true) {
         if(move && data.left > 0) {
             goings[key].left = data.left - creep.store.getFreeCapacity(resType);
             if(creep.withdraw(s, type) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(s, {reusePath: 99});
-                creep.say('go dropped');
+                if(creep.moveTo(s, {reusePath: 99}) !== ERR_NO_PATH) {
+                    creep.say('go dropped');
+                    return true;
+                } else {
+                    return false;
+                }
             }
-            return true;
         }
         return data.left > 0;
     }
