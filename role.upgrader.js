@@ -17,8 +17,8 @@ const roleUpgrader = {
 
         if (creep.memory.upgrading) {
             
-            if (creep.upgradeController(Game.rooms['W26S12'].controller) === ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.rooms['W26S12'].controller, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 0});
+            if (creep.upgradeController(Game.rooms[_.keys(Game.rooms)[0]].controller) === ERR_NOT_IN_RANGE) {
+                creep.moveTo(Game.rooms[_.keys(Game.rooms)[0]].controller, {visualizePathStyle: {stroke: '#ffffff'}, reusePath: 0});
             }
         } else {
             let source = Game.getObjectById('5e229d0ff9d0a63ba16ee1e7')
