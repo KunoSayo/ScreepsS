@@ -11,7 +11,7 @@ const receivers = ['5e229d0ff9d0a63ba16ee1e7'];
 function tick() {
     for(let senderID of senders) {
         let sender = Game.getObjectById(senderID);
-        if(sender.cooldown === 0) {
+        if(sender && sender.cooldown === 0) {
             for(let receiverID of receivers) {
                 let receiver = Game.getObjectById(receiverID);
                 if(receiver.store.getFreeCapacity(RESOURCE_ENERGY) > 450) {
